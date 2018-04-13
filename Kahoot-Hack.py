@@ -5,6 +5,9 @@ from selenium import webdriver
 from colorama import init, Fore
 from PyQt4 import QtGui, QtCore
 
+"""
+
+"""
 
 def InitMessage():
 	init()
@@ -42,7 +45,7 @@ class Get_Answer(object):
 			Driver.close()
 			os.system('cls')
 			main()
-
+		time.sleep(1)
 		Driver.find_element_by_css_selector('.question-list__group-toggle').click()
 		self.soup = BeautifulSoup(Driver.page_source, 'html5lib')
 		Driver.close()
@@ -109,7 +112,9 @@ class Auto_Player(object):
 		self.Driver.find_element_by_css_selector('.btn.join, button').click()
 		time.sleep(self.SleepTime)
 		Session_Username = self.Driver.find_element_by_css_selector('input.username')
+		time.sleep(1)
 		Session_Username.send_keys(self.Username)
+		time.sleep(self.SleepTime)
 		self.Driver.find_elements_by_class_name('btn')[0].click()
 
 		
@@ -121,34 +126,42 @@ class Auto_Player(object):
 		global Question_And_Answers
 		Question_Number = 0
 		while True:
+			time.sleep(1)
 			if 'gameblock' in self.Driver.current_url:
 				# GET answer from the answer dict
 				Question = list(Question_And_Answers.keys())[Question_Number]
 				Answer = list(Question_And_Answers.values())[Question_Number]
-				print('Question: {}\nAnswer: {}\n'.format(Question, Answer))
+				print('\nQuestion: {}\nAnswer: {}'.format(Question, Answer))
 				self.Driver.switch_to_frame("gameBlockIframe")
 				Question_Number += 1
-				time.sleep(3)
-				triangle = self.Driver.find_element_by_css_selector('.card-button--triangle')
-				square = self.Driver.find_element_by_css_selector('.card-button--square')
-				diamond = self.Driver.find_element_by_css_selector('.card-button--diamond')
-				circle = self.Driver.find_element_by_css_selector('.card-button--circle')
+				time.sleep(0.5)
+				try:
+					triangle = self.Driver.find_element_by_css_selector('.card-button--triangle')
+					diamond = self.Driver.find_element_by_css_selector('.card-button--diamond')
+					square = self.Driver.find_element_by_css_selector('.card-button--square')
+					circle = self.Driver.find_element_by_css_selector('.card-button--circle')
+				except:
+					pass
 				if 'triangle' in Answer:
 					triangle.click()
 					print("Clicked Triangle")
 					self.Driver.switch_to_default_content()
+					time.sleep(1)
 				elif 'diamond' in Answer:
-					diamond.click
+					diamond.click()
 					print("Clicked Diamond")
 					self.Driver.switch_to_default_content()
+					time.sleep(1)
 				elif 'square' in Answer:
 					square.click()
 					print("Clicked Square")
 					self.Driver.switch_to_default_content()
+					time.sleep(1)
 				elif 'circle' in Answer:
 					circle.click()
 					print("Clicked circle")
 					self.Driver.switch_to_default_content()
+					time.sleep(1)
 				continue
 
 
