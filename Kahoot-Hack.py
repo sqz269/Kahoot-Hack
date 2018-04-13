@@ -3,11 +3,7 @@ import time
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from colorama import init, Fore
-from PyQt4 import QtGui, QtCore
 
-"""
-
-"""
 
 def InitMessage():
 	init()
@@ -46,7 +42,13 @@ class Get_Answer(object):
 			os.system('cls')
 			main()
 		time.sleep(1)
-		Driver.find_element_by_css_selector('.question-list__group-toggle').click()
+		try:
+			Driver.find_element_by_css_selector('.question-list__group-toggle').click()
+		except:
+			os.system('cls')
+			print("Kahoot not found.")
+			input("Press enter to try again")
+			main()
 		self.soup = BeautifulSoup(Driver.page_source, 'html5lib')
 		Driver.close()
 
