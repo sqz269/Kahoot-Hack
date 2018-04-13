@@ -1,13 +1,10 @@
 import os
 import time
-import urllib
-import requests
 from bs4 import BeautifulSoup
 from selenium import webdriver
 from colorama import init, Fore
 from PyQt4 import QtGui, QtCore
 
-Fore.LIGHTGREEN_EX
 
 def InitMessage():
 	init()
