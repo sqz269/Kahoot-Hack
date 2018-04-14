@@ -10,7 +10,6 @@ def InitMessage():
 	print(Fore.LIGHTGREEN_EX + "MADE BY SQZ")
 	print("Written in python")
 	print("KAHOOT ANSWER HACK v0.01")
-	print("SOFTWARE LICENSE: Attribution 2.0 Generic (CC BY 2.0)")
 	print("FORK ME ON GITHUB: https://github.com/sqz269/Kahoot-Hack\n\n" + Fore.RESET)
 
 class Get_Answer(object):
