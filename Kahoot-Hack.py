@@ -12,6 +12,7 @@ def InitMessage():
 	print("KAHOOT ANSWER HACK v0.01")
 	print("FORK ME ON GITHUB: https://github.com/sqz269/Kahoot-Hack\n\n" + Fore.RESET)
 
+
 class Get_Answer(object):
 
 
@@ -97,10 +98,11 @@ class Get_Answer(object):
 class Auto_Player(object):
 
 
-	def __init__(self, Pin_Number, Username, pageloadtime):
+	def __init__(self, Pin_Number, Username, Anser_delay,pageloadtime):
 		super(Auto_Player, self).__init__()
 		self.Pin_Number = Pin_Number
 		self.Username = Username
+		self.AnserDelay = int(Anser_delay)
 		self.SleepTime = int(pageloadtime)
 
 
@@ -129,44 +131,47 @@ class Auto_Player(object):
 		Question_Number = 0
 		while True:
 			time.sleep(1)
-			if 'gameblock' in self.Driver.current_url:  # If kahoot is in the answering stage
-				# GET answer from the answer dict
-				Question = list(Question_And_Answers.keys())[Question_Number]
-				Answer = list(Question_And_Answers.values())[Question_Number]
-				print('\nQuestion: {}\nAnswer: {}'.format(Question, Answer))
-				self.Driver.switch_to_frame("gameBlockIframe")  # Switch to Choices IFRAME (HTML ELEMENT)
-				Question_Number += 1
-				time.sleep(0.5)
-				try:
-					# Find Answer choice location
-					triangle = self.Driver.find_element_by_css_selector('.card-button--triangle')
-					diamond = self.Driver.find_element_by_css_selector('.card-button--diamond')
-					square = self.Driver.find_element_by_css_selector('.card-button--square')
-					circle = self.Driver.find_element_by_css_selector('.card-button--circle')
-				except:
-					pass
-				if 'triangle' in Answer:  # If the answer is X, then click the choice correspond to it's answer
-					triangle.click()
-					print("Clicked Triangle")
-					self.Driver.switch_to_default_content()  # Switch back to the body frame (Just want to do it)
-					time.sleep(1)  # Wait to submit the answer
-				elif 'diamond' in Answer:
-					diamond.click()
-					print("Clicked Diamond")
-					self.Driver.switch_to_default_content()
-					time.sleep(1)
-				elif 'square' in Answer:
-					square.click()
-					print("Clicked Square")
-					self.Driver.switch_to_default_content()
-					time.sleep(1)
-				elif 'circle' in Answer:
-					circle.click()
-					print("Clicked circle")
-					self.Driver.switch_to_default_content()
-					time.sleep(1)
-				continue
-
+			try:
+				if 'gameblock' in self.Driver.current_url:  # If kahoot is in the answering stage
+					# GET answer from the answer dict
+					Question = list(Question_And_Answers.keys())[Question_Number]
+					Answer = list(Question_And_Answers.values())[Question_Number]
+					print('\nQuestion: {}\nAnswer: {}'.format(Question, Answer))
+					self.Driver.switch_to_frame("gameBlockIframe")  # Switch to Choices IFRAME (HTML ELEMENT)
+					Question_Number += 1
+					time.sleep(0.5)
+					try:
+						# Find Answer choice location
+						triangle = self.Driver.find_element_by_css_selector('.card-button--triangle')
+						diamond = self.Driver.find_element_by_css_selector('.card-button--diamond')
+						square = self.Driver.find_element_by_css_selector('.card-button--square')
+						circle = self.Driver.find_element_by_css_selector('.card-button--circle')
+						time.sleep(self.AnserDelay)  # Delay x seconds then answer
+					except:
+						pass
+					if 'triangle' in Answer:  # If the answer is X, then click the choice correspond to it's answer
+						triangle.click()
+						print("Clicked Triangle")
+						self.Driver.switch_to_default_content()  # Switch back to the body frame (Just want to do it)
+						time.sleep(1)  # Wait to submit the answer
+					elif 'diamond' in Answer:
+						diamond.click()
+						print("Clicked Diamond")
+						self.Driver.switch_to_default_content()
+						time.sleep(1)
+					elif 'square' in Answer:
+						square.click()
+						print("Clicked Square")
+						self.Driver.switch_to_default_content()
+						time.sleep(1)
+					elif 'circle' in Answer:
+						circle.click()
+						print("Clicked circle")
+						self.Driver.switch_to_default_content()
+						time.sleep(1)
+					continue
+			except Exception as Error:
+				print(str(Error))
 
 def main():
 	InitMessage()
@@ -178,6 +183,7 @@ def main():
 	print("\n--------------Auto Game Play-----------------")
 	kahootPlayPin = input('kahoot game pin: ')
 	kahootPlayerName = input('kahoot ingame username: ')
+	answerDelay = input('Delay Answer (seconds): ')
 
 	Answer = Get_Answer(quizID, kahootUsername, kahootPassword, webpageLoadingTime)
 	Answer.Get_Quizurl()
@@ -185,7 +191,7 @@ def main():
 	Answer.Get_Quiz_Info()
 	Answer.Get_Question_And_Answer()
 
-	AutoPlay = Auto_Player(kahootPlayPin, kahootPlayerName, webpageLoadingTime)
+	AutoPlay = Auto_Player(kahootPlayPin, kahootPlayerName, answerDelay, webpageLoadingTime)
 	AutoPlay.Enter_Game()
 	AutoPlay.Start_Play()
 	
