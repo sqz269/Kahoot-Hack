@@ -4,9 +4,9 @@ from bs4 import BeautifulSoup
 from selenium import webdriver
 from colorama import init, Fore
 
+init()
 
 def InitMessage():
-	init()
 	print(Fore.LIGHTGREEN_EX + "MADE BY SQZ")
 	print("Written in python")
 	print("KAHOOT ANSWER HACK v0.01")
@@ -20,7 +20,7 @@ class Get_Answer(object):
 		self.quizID = quizID
 		self.Username = Username
 		self.Password = Password
-		self.SleepTime = int(pageLoadTime)
+		self.SleepTime = pageLoadTime
 		super(Get_Answer, self).__init__()
 
 
@@ -99,11 +99,11 @@ class Auto_Player(object):
 
 
 	def __init__(self, Pin_Number, Username, Anser_delay,pageloadtime):
-		super(Auto_Player, self).__init__()
 		self.Pin_Number = Pin_Number
 		self.Username = Username
-		self.AnserDelay = int(Anser_delay)
-		self.SleepTime = int(pageloadtime)
+		self.AnserDelay = Anser_delay
+		self.SleepTime = pageloadtime
+		super(Auto_Player, self).__init__()
 
 
 	def Enter_Game(self):
@@ -174,7 +174,6 @@ class Auto_Player(object):
 				print(str(Error))
 
 def main():
-	InitMessage()
 	print("--------------Answer Gathering----------------")
 	quizID = input('quizId=')
 	kahootUsername = input('kahoot username: ')
@@ -184,6 +183,14 @@ def main():
 	kahootPlayPin = input('kahoot game pin: ')
 	kahootPlayerName = input('kahoot ingame username: ')
 	answerDelay = input('Delay Answer (seconds): ')
+
+	try:
+		webpageLoadingTime = int(webpageLoadingTime)
+		answerDelay = int(answerDelay)
+	except ValueError:
+		print(Fore.LIGHTYELLOW_EX + "\nError: webpageLoadTime and answerDelay must be a integer" + Fore.RESET)
+		input("Press Enter to retry \n")
+		main()  # Possible Recursion Overflow
 
 	Answer = Get_Answer(quizID, kahootUsername, kahootPassword, webpageLoadingTime)
 	Answer.Get_Quizurl()
@@ -195,5 +202,5 @@ def main():
 	AutoPlay.Enter_Game()
 	AutoPlay.Start_Play()
 	
-
+InitMessage()
 main()
