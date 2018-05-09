@@ -123,12 +123,29 @@ class Auto_Player(object):
 
 		
 	def Sync(self):
-		pass
+		"""
+		QUESTION ELEMENT> THTML
+		CSS_RULE  .status-bar__item
+		ID  NONE
+		ELEMENT TYPE. DIV
+		"""
+		while True:
+			time.sleep(0.5)
+			if 'gameblock' in self.Driver.current_url:
+				element = self.Driver.find_element_by_css_selector('.status-bar__question-number')
+				Raw_Question_Number = element.text
+				No_Space = Raw_Question_Number.replace(" ", '')
+				O_Pos = No_Space.index('o')
+				Current_Question = No_Space[:O_Pos]
+				print("CURRENT QUESTION: {}".format(Current_Question))
+				return int(Current_Question) - 1
 
 
 	def Start_Play(self):
 		global Question_And_Answers
 		Question_Number = 0
+		TotalQuestions = len(Question_And_Answers)
+		Question_Number = self.Sync()
 		while True:
 			time.sleep(1)
 			try:
@@ -169,7 +186,11 @@ class Auto_Player(object):
 						print("Clicked circle")
 						self.Driver.switch_to_default_content()
 						time.sleep(1)
-					continue
+					if TotalQuestions == Question_Number:
+						print("\n\nDONE...")
+						input("Press Enter to Enter another game")
+						os.system('cls')
+						main()
 			except Exception as Error:
 				print(str(Error))
 
