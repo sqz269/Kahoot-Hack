@@ -1,6 +1,7 @@
 # Kahoot-Hack
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b1a22e16e65c414cb253813213eba3c9)](https://www.codacy.com/manual/sqz269/Kahoot-Hack?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sqz269/Kahoot-Hack&amp;utm_campaign=Badge_Grade)
+
 Kahoot-Hack  
-Made by sqz  
 Required field  
 quizUUID = the long string after quizId=
 game pin = the game pin teacher have
