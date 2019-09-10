@@ -47,7 +47,6 @@ class GetAnswers():
 		for question in questions:
 			questionTextSplit = question.text.split("\n")
 			questionAnswerIndex = questionTextSplit.index("This is a correct answer") - 1
-			questionAnswer = questionTextSplit[questionAnswerIndex]
 			questionNumber = int(questionTextSplit[0].split("-")[0])
 			answerDict.update({questionNumber: self.CVT_INT_SHAPE.get(questionAnswerIndex)})
 			self.logger.debug({questionNumber: self.CVT_INT_SHAPE.get(questionAnswerIndex)})
@@ -153,20 +152,20 @@ def getUserInput():
 	gamePin = input("Game Pin: ")
 	username = input("Username: ")
 	delay = float(input("Answer Delay: "))
-	AP = AutoPlay("195226", "Test", 0.01, getQuizAnswers(quizUUID))
+	AP = AutoPlay(gamePin, username, delay, getQuizAnswers(quizUUID))
 	AP.enterGame()
 	AP.doGameLoop()
 
 
 def main():
 	try:
-		with open("kahoot.ini") as file: pass
+		with open("kahoot.ini"): pass
 		use = input("Kahoot.ini configuration found. use it? (y/n)")
 		if (use.lower() == "y"):
 			startGameFromIni()
 		else:
 			getUserInput()
-	except:
+	except (FileNotFoundError, PermissionError):
 		print("Unable to find kahoot.ini; defaulting to user input;")
 		getUserInput()
 
