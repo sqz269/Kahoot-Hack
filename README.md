@@ -1,14 +1,12 @@
 # Kahoot-Hack
-Kahoot-Hack  
-Made by sqz  
-Required field  
-quizId=quizId Which displayed on the host Kahoot url  
-kahoot username=Username to login in order to access the quiz  
-kahoot password=Password to login in order to access the quiz  
-webpage Load time=Time wait to get content of the page  
-Kahoot game pin=Game pin number needed to join the game  
-Kahoot ingame username=ingame username  
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b1a22e16e65c414cb253813213eba3c9)](https://www.codacy.com/manual/sqz269/Kahoot-Hack?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=sqz269/Kahoot-Hack&amp;utm_campaign=Badge_Grade)
 
+Kahoot-Hack  
+Required field  
+quizUUID = the long string after quizId=
+game pin = the game pin teacher have
+username = the username to join the game with
+answser delay = x amount of seconds to delay the answer
 
 # HOW TO USE
 Enter quizId from the url  
