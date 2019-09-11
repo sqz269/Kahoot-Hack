@@ -127,7 +127,7 @@ class AutoPlay():
 					self.logger.info("Current Question is: {} | Answer Shape: {}".format(questionNumber, self.answerDict.get(questionNumber)))
 					time.sleep(self.answerDelay)
 					self.driver.find_element_by_class_name(self.CVT_SHAPE_CLASSNAME.get(self.answerDict.get(questionNumber))).click()
-				except Exception as e:
+				except Exception:
 					self.logger.exception("Failed to answer question number: {}; Supposed Answer: {}. Execution will continue".format(questionNumber, self.answerDict.get(questionNumber)))
 			else:
 				self.logger.debug("Not In Question stage. waiting")
@@ -180,4 +180,9 @@ def main():
 		getUserInput()
 
 
-main()
+try:
+	main()
+except Exception as e:
+	print("Failed to run; Exception: {}".format(e))
+	print("Press Enter to exit")
+	input(); raise SystemExit(1);
