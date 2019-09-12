@@ -3,10 +3,10 @@
 
 Kahoot-Hack  
 Required field  
-quizUUID = the long string after quizId=
-game pin = the game pin teacher have
-username = the username to join the game with
-answser delay = x amount of seconds to delay the answer
+quizUUID = the long string after quizId=  
+game pin = the game pin teacher have  
+username = the username to join the game with  
+answser delay = x amount of seconds to delay the answer  
 
 # HOW TO USE
 Enter quizId from the url  
