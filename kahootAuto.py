@@ -7,6 +7,18 @@ from selenium import webdriver, common
 
 init_logging()
 
+def initWebDriver(logger):
+	logger.info("Initalizing Automated Browser Session")
+	try:
+		driver = webdriver.Chrome("chromedriver_76.exe") # TODO: Allow user to select chromedriver version
+	except common.exceptions.WebDriverException as err:
+		logger.error("ERROR: {}".format(err))
+		logger.critical("FAILED TO START AUTOMATED BROWSER SESSION; UNABLE TO CONTINUE\nPress Enter to exit")
+		input(); raise SystemExit(1);
+
+	logger.info("Automated Browser Session Initalized")
+	return driver
+
 class GetAnswers():
 
 
@@ -16,7 +28,7 @@ class GetAnswers():
 		self.quizID = quizID
 		self.logger.info("Got Quiz id: {}".format(quizID))
 
-		self.initWebDriver()
+		self.driver = initWebDriver(self.logger)
 
 		self.pageLoadTime = pageLoadTime
 
@@ -26,18 +38,6 @@ class GetAnswers():
 			7: "CIRCLE",
 			9: "SQUARE"
 		}
-
-
-	def initWebDriver(self):
-		self.logger.info("Initalizing Automated Browser Session")
-		try:
-			self.driver = webdriver.Chrome("chromedriver_76.exe") # TODO: Allow user to select chromedriver version
-		except common.exceptions.WebDriverException as err:
-			self.logger.error("ERROR: {}".format(err))
-			self.logger.critical("FAILED TO START AUTOMATED BROWSER SESSION; UNABLE TO CONTINUE\nPress Enter to exit")
-			input(); raise SystemExit(1);
-
-		self.logger.info("Automated Browser Session Initalized")
 
 
 	def getQuizAnswers(self) -> dict:
@@ -80,7 +80,7 @@ class AutoPlay():
 		self.pageLoadTime = pageLoadTime
 		self.logger = getLogger("bot")
 		self.logger.warning("Answer Delay is set to {}s".format(answerDelay))
-		self.initWebDriver()
+		self.driver = initWebDriver(self.logger)
 
 		self.CVT_SHAPE_CLASSNAME = {
 			"SQUARE": "bDfINc",
@@ -88,18 +88,6 @@ class AutoPlay():
 			"TRIANGLE": "eRSCLD",
 			"DIAMOND": "fabXZJ"
 		}
-
-
-	def initWebDriver(self):
-		self.logger.info("Initalizing Automated Browser Session")
-		try:
-			self.driver = webdriver.Chrome("chromedriver_76.exe") # TODO: Allow user to select chromedriver version
-		except common.exceptions.WebDriverException as err:
-			self.logger.error("ERROR: {}".format(err))
-			self.logger.critical("FAILED TO START AUTOMATED BROWSER SESSION; UNABLE TO CONTINUE\nPress Enter to exit")
-			input(); raise SystemExit(1);
-
-		self.logger.info("Automated Browser Session Initalized")
 
 
 	def enterGame(self):
@@ -136,18 +124,43 @@ class AutoPlay():
 		self.driver.quit()
 
 
-def startGameFromIni():
+def validateOptions(quizId, pin, username, delay, pgloadDelay):
+	if not quizId or len(quizId) != 36:
+		raise ValueError("Invalid UUID; Either UUID does not exist, or too short/long")
+	try:
+		int(pin)
+	except ValueError:
+		raise ValueError("Invalid Pin, Pin must be all digits")
+
+	try:
+		float(delay)
+		float(pgloadDelay)
+	except ValueError:
+		raise ValueError("Invalid Answer Delay/Page Load Delay, It must be a positive decimal")
+
+
+def loadSettingsFromIni():
 	cfg = ConfigParser()
 	cfg.read("kahoot.ini")
+
 	mainCfg = cfg["config"]
 	uuid = mainCfg["QuizUUID"]
 	pin = mainCfg["GamePIN"]
 	username = mainCfg["Username"]
-	delay = float(mainCfg["AnswerDelay"])
-	pageLoadDelay = float(mainCfg["pgLoadDelay"])
-	AP = AutoPlay(pin, username, delay, getQuizAnswers(uuid, pageLoadDelay), pageLoadDelay)
-	AP.enterGame()
-	AP.doGameLoop()
+	delay = mainCfg["AnswerDelay"]
+	pageLoadDelay = mainCfg["pgLoadDelay"]
+	validateOptions(uuid, pin, username, delay, pageLoadDelay)
+	return (pin, username, float(delay), uuid, float(pageLoadDelay))
+
+
+def loadSettingsFromUserInput():
+	quizUUID = input("Game UUID: ")
+	gamePin = input("Game Pin: ")
+	username = input("Username: ")
+	delay = input("Answer Delay: ")
+	pgLoadDelay = input("Click Element delay after page load: ")
+	validateOptions(quizUUID, gamePin, username, delay, pgLoadDelay);
+	return (gamePin, username, float(delay), quizUUID, float(pgLoadDelay))
 
 
 def getQuizAnswers(quizUUID, loadDelay):
@@ -156,13 +169,8 @@ def getQuizAnswers(quizUUID, loadDelay):
 	return GA.getQuizAnswers()
 
 
-def getUserInput():
-	quizUUID = input("Game UUID: ")
-	gamePin = input("Game Pin: ")
-	username = input("Username: ")
-	delay = float(input("Answer Delay: "))
-	pgLoadDelay = float(input("Click Element delay after page load: "))
-	AP = AutoPlay(gamePin, username, delay, getQuizAnswers(quizUUID, pgLoadDelay), pgLoadDelay)
+def doGame(pin:str, username:str, delay:float, uuid:str, pageLoadDelay:float):
+	AP = AutoPlay(pin, username, delay, getQuizAnswers(uuid, pageLoadDelay), pageLoadDelay)
 	AP.enterGame()
 	AP.doGameLoop()
 
@@ -172,12 +180,12 @@ def main():
 		with open("kahoot.ini"): pass
 		use = input("Kahoot.ini configuration found. use it? (y/n)")
 		if (use.lower() == "y"):
-			startGameFromIni()
+			doGame(*loadSettingsFromIni())
 		else:
-			getUserInput()
+			doGame(*loadSettingsFromUserInput())
 	except (FileNotFoundError, PermissionError):
 		print("Unable to find kahoot.ini; defaulting to user input;")
-		getUserInput()
+		doGame(*loadSettingsFromUserInput())
 
 
 try:
